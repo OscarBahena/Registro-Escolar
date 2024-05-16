@@ -1,2 +1,1 @@
-Hola Mundo
-  universidad-81fd7.web.app
+universidad-81fd7.web.app
