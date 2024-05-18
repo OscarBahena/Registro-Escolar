@@ -26,16 +26,38 @@ const tablaPapeleta = document.querySelector("#tbPapeleta")
 
 bti.addEventListener('click', async (e) => {
   try {
-    const docRef = await addDoc(collection(db, "Papeleta"), {
+    // Verificar si algún campo de unidad está vacío
+    const unidadCampos = document.querySelectorAll('.unidad-select');
+    let algunoVacio = false;
+    unidadCampos.forEach((campo) => {
+      if (campo.value === '') {
+        algunoVacio = true;
+      }
+    });
+
+    // Si algún campo de unidad está vacío, no registrar ese campo
+    const registro = {
       Matricula: document.getElementById("mat_pap").value,
       Programa: document.getElementById("pro_edu_pap").value,
       Semestre: document.getElementById("sem_pap").value,
       Grupo: document.getElementById("gru_pap").value,
       Registro: "Maribel Guardia",     
-    });
-    // console.log("Document written with ID: ", docRef.id);
-  } catch (e) {
-    console.error("Error adding document: ", e);
+    };
+
+    if (!algunoVacio) {
+      // Si no hay campos de unidad vacíos, agregar los campos de unidad al registro
+      const unidades = {};
+      unidadCampos.forEach((campo) => {
+        unidades[campo.id] = campo.value;
+      });
+      registro.unidades = unidades;
+    }
+
+    // Registrar el documento en la base de datos
+    const docRef = await addDoc(collection(db, "Papeleta"), registro);
+    console.log("Documento registrado con ID: ", docRef.id);
+  } catch (error) {
+    console.error("Error al agregar documento: ", error);
   }
 });
 
@@ -158,38 +180,55 @@ $("#tbPapeleta").on("click",".regis", async function () {
 
 })
 
-// Consultar la colección de Unidades en Firestore y obtener los IDs
 async function obtenerIdsUnidades() {
-  const unidadesRef = collection(db, "Unidades");
-  const snapshot = await getDocs(unidadesRef);
-  const ids = [];
-  snapshot.forEach((doc) => {
-    ids.push(doc.id);
-  });
-  return ids;
+  try {
+    const unidadesRef = collection(db, "Unidades");
+    const snapshot = await getDocs(unidadesRef);
+    const ids = [];
+    snapshot.forEach((doc) => {
+      ids.push(doc.id);
+    });
+    return ids;
+  } catch (error) {
+    console.error("Error al obtener IDs de unidades:", error);
+    return [];
+  }
 }
 
-// Función para crear opciones desplegables en el formulario HTML
 async function crearMenuDesplegable() {
-  const ids = await obtenerIdsUnidades();
-  const unidadContainer = document.getElementById("unidad-container");
+  try {
+    // Obtener la lista de IDs de unidades
+    const ids = await obtenerIdsUnidades();
 
-  // Limpiar opciones desplegables previas
-  unidadContainer.innerHTML = "";
+    // Verificar si hay elementos .unidad-select
+    const unidadSelects = document.querySelectorAll(".unidad-select");
+    if (unidadSelects.length === 0) {
+      console.error("No se encontraron elementos con la clase .unidad-select");
+      return;
+    }
 
-  // Crear opción predeterminada
-  const defaultOption = document.createElement("option");
-  defaultOption.text = "Seleccionar Unidad";
-  defaultOption.value = "";
-  unidadContainer.appendChild(defaultOption);
+    // Iterar sobre los campos select "unidad" y asignar las opciones desplegables
+    unidadSelects.forEach((select, index) => {
+      // Limpiar opciones desplegables previas
+      select.innerHTML = "";
 
-  // Crear opciones desplegables con los IDs de las unidades
-  ids.forEach((id) => {
-    const option = document.createElement("option");
-    option.text = id;
-    option.value = id;
-    unidadContainer.appendChild(option);
-  });
+      // Crear opción predeterminada
+      const defaultOption = document.createElement("option");
+      defaultOption.text = "Seleccionar Unidad";
+      defaultOption.value = "";
+      select.appendChild(defaultOption);
+
+      // Crear opciones desplegables con los IDs de las unidades
+      ids.forEach((id) => {
+        const option = document.createElement("option");
+        option.text = id;
+        option.value = id;
+        select.appendChild(option);
+      });
+    });
+  } catch (error) {
+    console.error("Error al crear el menú desplegable:", error);
+  }
 }
 
 // Llamar a la función para crear el menú desplegable cuando se cargue la página

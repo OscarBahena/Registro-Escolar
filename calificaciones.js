@@ -1,7 +1,19 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
 //import { getFirestore } from "./node_modules/firebase/firebase-firestore-lite.js";
 
-import { getFirestore, collection, getDocs,addDoc,setDoc ,deleteDoc,doc, onSnapshot,query,updateDoc} from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+import { 
+  getFirestore, 
+  collection, 
+  getDocs, 
+  addDoc,
+  setDoc, 
+  deleteDoc, 
+  doc, 
+  onSnapshot, 
+  query, 
+  updateDoc 
+} from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
@@ -18,28 +30,20 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-let bti =  document.getElementById("inser");
-
-let btc =  document.getElementById("consu");
-
+let bti = document.getElementById("inser");
+let btc = document.getElementById("consu");
 const tbCalificaciones = document.querySelector("#tbCalificaciones");
 
 btc.addEventListener('click', async (e) => {
   try {
     tbCalificaciones.innerHTML = "";
-    
     const unidadesRef = collection(db, "Unidades");
-    
     const unidadesSnapshot = await getDocs(unidadesRef);
-    
     unidadesSnapshot.forEach(async (unidadDoc) => {
       const unidadId = unidadDoc.id;
       const unidadData = unidadDoc.data();
-
       const registrosRef = collection(db, "Unidades", unidadId, "Acreditados");
-
       const registrosSnapshot = await getDocs(registrosRef);
-      
       registrosSnapshot.forEach((registroDoc) => {
         const registroData = registroDoc.data();
         tbCalificaciones.innerHTML += `<tr class="regis" data-id="${registroDoc.id}">
@@ -69,15 +73,89 @@ bti.addEventListener('click', async (e) => {
   try {
     const matricula = document.getElementById("mat_etu").value; 
     const unidadSeleccionada = document.getElementById("cla_uni").value;
-    const docRef = doc(collection(db, "Unidades", unidadSeleccionada, "Acreditados"), matricula);
-    await setDoc(docRef, {
-      Clave: document.getElementById("cla_uni").value,
-      Matricula: matricula, 
-      Catedratico: document.getElementById("catedratico").value,
-      Calificacion: document.getElementById("calificacion").value,
-      Ciclo: document.getElementById("ciclo").value,
-      Registro: "Pancho Villa",
-    });
+    const calificacion = document.getElementById("calificacion").value;
+
+    if (calificacion === "NC" || calificacion === "6") {
+      let subcoleccion = "";
+      if (calificacion === "NC") {
+          subcoleccion = "NoCurso";
+      } else {
+          subcoleccion = "DesAcreditados";
+      }
+
+      const subcoleccionRef = collection(db, "Unidades", unidadSeleccionada, subcoleccion);
+      const snapshot = await getDocs(subcoleccionRef);
+
+      if (snapshot.empty) {
+        const newmatricula = matricula + "-01";
+        const docRef = doc(subcoleccionRef, newmatricula);
+        await setDoc(docRef, {
+            Clave: document.getElementById("cla_uni").value,
+            Matricula: matricula, 
+            Catedratico: document.getElementById("catedratico").value,
+            Calificacion: calificacion,
+            Ciclo: document.getElementById("ciclo").value,
+            Registro: "Pancho Villa",
+        });
+        console.log("La subcolección no existe");
+      } else {
+        let intento = 1;
+        let registroID = matricula + "-0" + intento;
+        
+        let registroExiste = false;
+        snapshot.forEach(doc => {
+          if (doc.id === registroID) {
+            registroExiste = true;
+            return;
+          }
+        });
+        
+        while (registroExiste && intento < 3) {
+          intento++;
+          registroID = matricula + "-0" + intento;
+          registroExiste = false;
+          snapshot.forEach(doc => {
+            if (doc.id === registroID) {
+              registroExiste = true;
+              return;
+            }
+          });
+        }
+
+        if (registroExiste && intento >= 3) {
+          const mensajeErrorHTML = `
+            <div id="mensaje-error" class="mensaje-error">
+              <p>Número de Intentos Excedido. Subir Reporte</p>
+            </div>
+          `;
+          document.body.insertAdjacentHTML("beforeend", mensajeErrorHTML);
+          const mensajeError = document.getElementById("mensaje-error");
+          setTimeout(() => {
+            mensajeError.remove();
+          }, 4000);      
+        } else {
+          const docRef = doc(subcoleccionRef, registroID);
+          await setDoc(docRef, {
+            Clave: document.getElementById("cla_uni").value,
+            Matricula: matricula, 
+            Catedratico: document.getElementById("catedratico").value,
+            Calificacion: calificacion,
+            Ciclo: document.getElementById("ciclo").value,
+            Registro: "Pancho Villa",
+          });
+        }
+      }
+      } else {
+          const docRef = doc(collection(db, "Unidades", unidadSeleccionada, "Acreditados"), matricula);
+          await setDoc(docRef, {
+            Clave: document.getElementById("cla_uni").value,
+            Matricula: matricula, 
+            Catedratico: document.getElementById("catedratico").value,
+            Calificacion: calificacion,
+            Ciclo: document.getElementById("ciclo").value,
+          Registro: "Pancho Villa",
+      });
+    }
     console.log("Document written with ID: ", matricula);
   } catch (e) {
     console.error("Error adding document: ", e);
@@ -99,17 +177,14 @@ $("#tbCalificaciones").on("click", ".editar_", async function () {
     const ids = $(this).data("id").split('|');
     const registro_id = ids[0];
     const unidad_id = ids[1];
-
     const registroRef = doc(db, "Unidades", unidad_id, "Acreditados", registro_id);
-    
     await updateDoc(registroRef, {
       Catedratico: document.getElementById("catedratico").value,
       Calificacion: document.getElementById("calificacion").value,
       Ciclo: document.getElementById("ciclo").value,
       Registro: "Pancho Villa",
-    })
-
-    } catch (error) {
+    });
+  } catch (error) {
     console.log("Error:", error);
   }
 });
@@ -123,9 +198,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     unidadesSnapshot.forEach((doc) => {
       const unidadId = doc.id;
       const unidadData = doc.data(); 
-      
       const optionText = `${unidadId} - ${unidadData.Nombre}`;
-
       const option = document.createElement("option");
       option.value = unidadId;
       option.textContent = optionText;

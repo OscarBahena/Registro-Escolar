@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <style >
+  <style>
     .form {
       width: 450px;
     }
@@ -10,9 +10,7 @@
     }
     .Titulo {
       padding: 15px 0 10px 0;
-
       font-size: 22px;
-
       text-align: center;
     }
   </style>
@@ -26,7 +24,6 @@
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
@@ -50,8 +47,8 @@
   </nav>
   <div class="container">
     <h1 class="Titulo">Regsitro de Estudiantes</h1>
-    <div class="row  justify-content-center align-items-center">
-      <form action="#" class="border  form">
+    <div class="row justify-content-center align-items-center">
+      <form action="#" class="border form">
         <div class="form-group">
           <label for="nombre">Nombre</label>
           <input type="text" name="nombre" id="nombre" class="form-control">
@@ -66,7 +63,12 @@
         </div>
         <div class="form-group">
           <label for="carr">Carrera</label>
-          <input type="text" name="carr" id="carr" class="form-control">
+          <select name="carr" id="carr" class="form-control">
+            <option disabled selected>Seleccione una Carrera</option>
+            <option value="Ing. Computación">Ing. Computación</option>
+            <option value="Ing. Civil">Ing. Civil</option>
+            <option value="Lic. Psicología">Lic. Psicología</option>
+          </select>
         </div>
         <div class="form-group">
           <label for="correo">Correo</label>
@@ -78,15 +80,19 @@
         </div>
         <div class="form-group">
           <label for="est">Estado Académico</label>
-          <input type="cel" name="est" id="est" class="form-control">
+          <select name="est" id="est" class="form-control">
+            <option disabled selected>Seleccione un Estado Académico</option>
+            <option value="Activo">Activo</option>
+            <option value="Suspendido">Suspendido</option>
+          </select>
         </div>
-        <button type="button" class="btn btn-primary" id = "inser">registrar</button>
-        <button type="button" class="btn btn-secondary" id = "consu">mostrar</button>
+        <button type="button" class="btn btn-primary" id="inser">registrar</button>
+        <button type="button" class="btn btn-secondary" id="consu">mostrar</button>
       </form>
     </div>
   </div>
   <div class="table-responsive">
-    <table  class="table table-striped table-hover" style="text-align: center;">
+    <table class="table table-striped table-hover" style="text-align: center;">
       <thead>
         <tr>
           <th>Nombre</th>
