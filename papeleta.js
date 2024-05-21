@@ -1,7 +1,19 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
 //import { getFirestore } from "./node_modules/firebase/firebase-firestore-lite.js";
 
-import { getFirestore, collection, getDocs,addDoc,setDoc ,deleteDoc,doc, onSnapshot,query,updateDoc} from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+import { 
+  getFirestore, 
+  collection, 
+  getDocs, 
+  addDoc,
+  setDoc, 
+  deleteDoc, 
+  doc, 
+  onSnapshot, 
+  query, 
+  updateDoc 
+} from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
@@ -18,9 +30,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-let bti =  document.getElementById("inser");
+let bti = document.getElementById("inser");
+let btc = document.getElementById("consu");
 
-let btc =  document.getElementById("consu");
 
 const tablaPapeleta = document.querySelector("#tbPapeleta")
 
@@ -195,43 +207,22 @@ async function obtenerIdsUnidades() {
   }
 }
 
-async function crearMenuDesplegable() {
+window.addEventListener('DOMContentLoaded', async () => {
   try {
-    // Obtener la lista de IDs de unidades
-    const ids = await obtenerIdsUnidades();
-
-    // Verificar si hay elementos .unidad-select
-    const unidadSelects = document.querySelectorAll(".unidad-select");
-    if (unidadSelects.length === 0) {
-      console.error("No se encontraron elementos con la clase .unidad-select");
-      return;
-    }
-
-    // Iterar sobre los campos select "unidad" y asignar las opciones desplegables
-    unidadSelects.forEach((select, index) => {
-      // Limpiar opciones desplegables previas
-      select.innerHTML = "";
-
-      // Crear opción predeterminada
-      const defaultOption = document.createElement("option");
-      defaultOption.text = "Seleccionar Unidad";
-      defaultOption.value = "";
-      select.appendChild(defaultOption);
-
-      // Crear opciones desplegables con los IDs de las unidades
-      ids.forEach((id) => {
-        const option = document.createElement("option");
-        option.text = id;
-        option.value = id;
-        select.appendChild(option);
-      });
+    const unidadesRef = collection(db, "Unidades");
+    const unidadesSnapshot = await getDocs(unidadesRef);
+    const selectElement = document.getElementById("cla_uni");
+    
+    unidadesSnapshot.forEach((doc) => {
+      const unidadId = doc.id;
+      const unidadData = doc.data(); 
+      const optionText = `${unidadId} - ${unidadData.Nombre}`;
+      const option = document.createElement("option");
+      option.value = unidadId;
+      option.textContent = optionText;
+      selectElement.appendChild(option);
     });
   } catch (error) {
-    console.error("Error al crear el menú desplegable:", error);
+    console.error("Error al cargar las unidades:", error);
   }
-}
-
-// Llamar a la función para crear el menú desplegable cuando se cargue la página
-document.addEventListener("DOMContentLoaded", function () {
-  crearMenuDesplegable();
 });

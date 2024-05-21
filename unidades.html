@@ -13,6 +13,17 @@
       font-size: 22px;
       text-align: center;
     }
+    .mensaje-completado {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: blue;
+      color: white;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
   </style>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -60,12 +71,12 @@
         </div>
         <div class="form-group">
           <label for="año">Ańo de Plan de Estudios</label>
-          <input type="text" name="año" id="año" class="form-control">
+          <input type="number" name="año" id="año" class="form-control">
         </div>
         <div class="form-group">
           <label for="periodo">Periodo</label>
           <select name="periodo" id="periodo" class="form-control">
-            <option value="" disabled selected>Seleccione un período</option>
+            <option value="" disabled selected>Seleccione un Período</option>
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
@@ -80,7 +91,7 @@
         <div class="form-group">
           <label for="categoria">Categoría</label>
           <select name="categoria" id="categoria" class="form-control">
-            <option value="" disabled selected>Seleccione una categoría</option>
+            <option value="" disabled selected>Seleccione una Categoría</option>
             <option value="Opcional">Opcional</option>
             <option value="Obligatoria">Obligatoria</option>
           </select>
@@ -88,7 +99,7 @@
         <div class="form-group">
           <label for="creditos">Créditos</label>
           <select name="creditos" id="creditos" class="form-control">
-            <option value="" disabled selected>Seleccione el número de créditos</option>
+            <option value="" disabled selected>Seleccione el Número de Créditos</option>
             <option value="4">4</option>
             <option value="6">6</option>
             <option value="8">8</option>
@@ -96,8 +107,8 @@
             <option value="12">12</option>
           </select>
         </div>
-        <button type="button" class="btn btn-primary" id="inser">registrar</button>
-        <button type="button" class="btn btn-secondary" id="consu">mostrar</button>
+        <button type="button" class="btn btn-primary" id="inser">Registrar</button>
+        <button type="button" class="btn btn-secondary" id="consu">Mostrar</button>
       </form>
     </div>
   </div>

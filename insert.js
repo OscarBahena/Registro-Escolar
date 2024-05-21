@@ -36,22 +36,47 @@ let btc = document.getElementById("consu");
 const tablaEstudiantes = document.querySelector("#tbEstudiantes");
 
 bti.addEventListener('click', async (e) => {
+  e.preventDefault();
+
+  const nombre = document.getElementById("nombre").value;
+  const apellidos = document.getElementById("ap").value;
+  const matricula = document.getElementById("mat").value;
+  const carrera = document.getElementById("carr").value;
+  const correo = document.getElementById("correo").value;
+  const telefono = document.getElementById("cel").value;
+  const estado = document.getElementById("est").value;
+
+  if (!nombre || !apellidos || !matricula || !carrera || !correo || !telefono || !estado) {
+    alert("Por favor, complete todos los campos.");
+    return;
+  }
+
   try {
     const docRef = await setDoc(
-      doc(db, "Estudiantes", document.getElementById("mat").value),
+      doc(db, "Estudiantes", matricula),
       {
-        Nombre: document.getElementById("nombre").value,
-        Apellidos: document.getElementById("ap").value,
-        Matricula: document.getElementById("mat").value,
-        Carrera: document.getElementById("carr").value,
-        Correo: document.getElementById("correo").value,
-        Telefono: document.getElementById("cel").value,
-        Estado: document.getElementById("est").value,
+        Nombre: nombre,
+        Apellidos: apellidos,
+        Matricula: matricula,
+        Carrera: carrera,
+        Correo: correo,
+        Telefono: telefono,
+        Estado: estado,
         Registro: "Pepe Pica Papas",
       }
     );
-  } catch (e) {
-    console.error("Error adding document: ", e);
+    const mensajeErrorHTML = `
+      <div id="mensaje-completado" class="mensaje-completado">
+        <p>Subiendo Registro...</p>
+      </div>
+    `;
+    document.body.insertAdjacentHTML("beforeend", mensajeErrorHTML);
+    const mensajeError = document.getElementById("mensaje-completado");
+    setTimeout(() => {
+      mensajeError.remove();
+    }, 3000);
+  } catch (error) {
+    console.error("Error al agregar el documento: ", error);
   }
 });
 

@@ -31,23 +31,52 @@ const db = getFirestore(app);
 
 let bti =  document.getElementById("inser");
 let btc =  document.getElementById("consu");
+
 const tablaUnidades = document.querySelector("#tbUnidades");
 
 bti.addEventListener('click', async (e) => {
+  e.preventDefault();
+
+  const clave = document.getElementById("clave").value;
+  const nombre = document.getElementById("nombre").value;
+  const año = document.getElementById("año").value;
+  const periodo = document.getElementById("periodo").value;
+  const categoria = document.getElementById("categoria").value;
+  const creditos = document.getElementById("creditos").value;
+
+  if (!clave || !nombre || !año || !periodo || !categoria || !creditos) {
+    alert("Por favor, complete todos los campos.");
+    return;
+  }
+  
   try {
-    const docRef = await setDoc(doc(db, "Unidades", document.getElementById("clave").value ), {
-        Clave: document.getElementById("clave").value,
-        Nombre: document.getElementById("nombre").value,
-        Año: document.getElementById("año").value,
-        Periodo: document.getElementById("periodo").value,
-        Categoria: document.getElementById("categoria").value,
-        Creditos: document.getElementById("creditos").value,
-        Registro:"Paquita la del Barrio",
-    });
-  } catch (e) {
-    console.error("Error adding document: ", e);
+    const docRef = await setDoc(
+      doc(db, "Unidades", clave),
+      {
+        Clave: clave,
+        Nombre: nombre,
+        Año: año,
+        Periodo: periodo,
+        Categoria: categoria,
+        Creditos: creditos,
+        Registro: "Paquita la del Barrio",
+      }
+    );
+    const mensajeErrorHTML = `
+      <div id="mensaje-completado" class="mensaje-completado">
+        <p>Subiendo Registro...</p>
+      </div>
+    `;
+    document.body.insertAdjacentHTML("beforeend", mensajeErrorHTML);
+    const mensajeError = document.getElementById("mensaje-completado");
+    setTimeout(() => {
+      mensajeError.remove();
+    }, 3000);
+  } catch (error) {
+    console.error("Error al agregar el documento: ", error);
   }
 });
+
 
 btc.addEventListener('click', async (e)=> {
   ShowUsers();

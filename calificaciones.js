@@ -32,44 +32,23 @@ const db = getFirestore(app);
 
 let bti = document.getElementById("inser");
 let btc = document.getElementById("consu");
+
 const tbCalificaciones = document.querySelector("#tbCalificaciones");
 
-btc.addEventListener('click', async (e) => {
-  try {
-    tbCalificaciones.innerHTML = "";
-    const unidadesRef = collection(db, "Unidades");
-    const unidadesSnapshot = await getDocs(unidadesRef);
-    unidadesSnapshot.forEach(async (unidadDoc) => {
-      const unidadId = unidadDoc.id;
-      const unidadData = unidadDoc.data();
-      const registrosRef = collection(db, "Unidades", unidadId, "Acreditados");
-      const registrosSnapshot = await getDocs(registrosRef);
-      registrosSnapshot.forEach((registroDoc) => {
-        const registroData = registroDoc.data();
-        tbCalificaciones.innerHTML += `<tr class="regis" data-id="${registroDoc.id}">
-          <td>${registroData.Clave}</td>
-          <td>${registroData.Matricula}</td>
-          <td>${registroData.Calificacion}</td>
-          <td>${registroData.Ciclo}</td>
-          <td>
-            <button class="btn-primary btn m-1 editar_" data-id="${registroDoc.id}|${unidadId}">
-              Editar 
-              <span class="spinner-border spinner-border-sm" id="Edit-${registroDoc.id}" style="display: none;"></span>
-            </button>        
-            <button class="btn-danger btn eliminar_" data-id="${registroDoc.id}|${registroData.Clave}|${registroData.Matricula}">
-              Eliminar 
-              <span class="spinner-border spinner-border-sm" id="elim-${registroDoc.id}" style="display: none;"></span>
-            </button>
-          </td>
-        </tr>`;
-      });
-    });
-  } catch (error) {
-    console.error("Error al mostrar registros:", error);
-  }
-});
-
 bti.addEventListener('click', async (e) => {
+  e.preventDefault();
+
+  const matricula = document.getElementById("mat_etu").value; 
+  const unidadSeleccionada = document.getElementById("cla_uni").value;
+  const calificacion = document.getElementById("calificacion").value;
+  const catedratico = document.getElementById("catedratico").value;
+  const ciclo = document.getElementById("ciclo").value;
+
+  if (!matricula || !unidadSeleccionada || !calificacion || !catedratico || !ciclo) {
+    alert("Por favor, complete todos los campos.");
+    return;
+  }
+
   try {
     const matricula = document.getElementById("mat_etu").value; 
     const unidadSeleccionada = document.getElementById("cla_uni").value;
@@ -132,7 +111,7 @@ bti.addEventListener('click', async (e) => {
           const mensajeError = document.getElementById("mensaje-error");
           setTimeout(() => {
             mensajeError.remove();
-          }, 4000);      
+          }, 3000);
         } else {
           const docRef = doc(subcoleccionRef, registroID);
           await setDoc(docRef, {
@@ -156,9 +135,105 @@ bti.addEventListener('click', async (e) => {
           Registro: "Pancho Villa",
       });
     }
-    console.log("Document written with ID: ", matricula);
+    const mensajeErrorHTML = `
+      <div id="mensaje-completado" class="mensaje-completado">
+        <p>Subiendo Registro...</p>
+      </div>
+    `;
+    document.body.insertAdjacentHTML("beforeend", mensajeErrorHTML);
+    const mensajeError = document.getElementById("mensaje-completado");
+    setTimeout(() => {
+      mensajeError.remove();
+    }, 3000);
   } catch (e) {
     console.error("Error adding document: ", e);
+  }
+});
+
+btc.addEventListener('click', async (e) => {
+  try {
+    tbCalificaciones.innerHTML = "";
+    const unidadesRef = collection(db, "Unidades");
+    const unidadesSnapshot = await getDocs(unidadesRef);
+    
+    unidadesSnapshot.forEach(async (unidadDoc) => {
+      const unidadId = unidadDoc.id;
+      const unidadData = unidadDoc.data();
+      
+      // Consulta para obtener los registros de la subcolección "Acreditados"
+      const registrosAcreditadosRef = collection(db, "Unidades", unidadId, "Acreditados");
+      const registrosAcreditadosSnapshot = await getDocs(registrosAcreditadosRef);
+      registrosAcreditadosSnapshot.forEach((registroDoc) => {
+        const registroData = registroDoc.data();
+        // Agrega los registros de Acreditados a la tabla
+        tbCalificaciones.innerHTML += `<tr class="regis" data-id="${registroDoc.id}">
+          <td>${registroData.Clave}</td>
+          <td>${registroData.Matricula}</td>
+          <td>${registroData.Calificacion}</td>
+          <td>${registroData.Ciclo}</td>
+          <td>
+            <button class="btn-primary btn m-1 editar_" data-id="${registroDoc.id}|${unidadId}">
+              Editar 
+              <span class="spinner-border spinner-border-sm" id="Edit-${registroDoc.id}" style="display: none;"></span>
+            </button>        
+            <button class="btn-danger btn eliminar_" data-id="${registroDoc.id}|${registroData.Clave}|${registroData.Matricula}">
+              Eliminar 
+              <span class="spinner-border spinner-border-sm" id="elim-${registroDoc.id}" style="display: none;"></span>
+            </button>
+          </td>
+        </tr>`;
+      });
+      
+      // Consulta para obtener los registros de la subcolección "NoCurso"
+      const registrosNoCursoRef = collection(db, "Unidades", unidadId, "NoCurso");
+      const registrosNoCursoSnapshot = await getDocs(registrosNoCursoRef);
+      registrosNoCursoSnapshot.forEach((registroDoc) => {
+        const registroData = registroDoc.data();
+        // Agrega los registros de NoCurso a la tabla
+        tbCalificaciones.innerHTML += `<tr class="regis" data-id="${registroDoc.id}">
+          <td>${registroData.Clave}</td>
+          <td>${registroData.Matricula}</td>
+          <td>${registroData.Calificacion}</td>
+          <td>${registroData.Ciclo}</td>
+          <td>
+            <button class="btn-primary btn m-1 editar_" data-id="${registroDoc.id}|${unidadId}">
+              Editar 
+              <span class="spinner-border spinner-border-sm" id="Edit-${registroDoc.id}" style="display: none;"></span>
+            </button>        
+            <button class="btn-danger btn eliminar_" data-id="${registroDoc.id}|${registroData.Clave}|${registroData.Matricula}">
+              Eliminar 
+              <span class="spinner-border spinner-border-sm" id="elim-${registroDoc.id}" style="display: none;"></span>
+            </button>
+          </td>
+        </tr>`;
+      });
+
+      // Consulta para obtener los registros de la subcolección "DesAcreditados"
+      const registrosDesAcreditadosRef = collection(db, "Unidades", unidadId, "DesAcreditados");
+      const registrosDesAcreditadosSnapshot = await getDocs(registrosDesAcreditadosRef);
+      registrosDesAcreditadosSnapshot.forEach((registroDoc) => {
+        const registroData = registroDoc.data();
+        // Agrega los registros de DesAcreditados a la tabla
+        tbCalificaciones.innerHTML += `<tr class="regis" data-id="${registroDoc.id}">
+          <td>${registroData.Clave}</td>
+          <td>${registroData.Matricula}</td>
+          <td>${registroData.Calificacion}</td>
+          <td>${registroData.Ciclo}</td>
+          <td>
+            <button class="btn-primary btn m-1 editar_" data-id="${registroDoc.id}|${unidadId}">
+              Editar 
+              <span class="spinner-border spinner-border-sm" id="Edit-${registroDoc.id}" style="display: none;"></span>
+            </button>        
+            <button class="btn-danger btn eliminar_" data-id="${registroDoc.id}|${registroData.Clave}|${registroData.Matricula}">
+              Eliminar 
+              <span class="spinner-border spinner-border-sm" id="elim-${registroDoc.id}" style="display: none;"></span>
+            </button>
+          </td>
+        </tr>`;
+      });
+    });
+  } catch (error) {
+    console.error("Error al mostrar registros:", error);
   }
 });
 

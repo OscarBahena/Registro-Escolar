@@ -13,6 +13,17 @@
         font-size: 22px;
         text-align: center;
     }
+    .mensaje-completado {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: blue;
+      color: white;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
     .mensaje-error {
       position: fixed;
       top: 50%;
@@ -23,13 +34,6 @@
       padding: 15px;
       border-radius: 5px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .cerrar {
-      position: absolute;
-      top: 5px;
-      right: 10px;
-      cursor: pointer;
     }
   </style>
   <meta charset="UTF-8">
@@ -70,17 +74,17 @@
         <div class="form-group">
           <label for="cla_uni">Clave de Unidad de Aprendizaje</label>
           <select name="cla_uni" id="cla_uni" class="form-control">
-            <option disabled selected>Seleccione una Clave de Unidad de Aprendizaje</option>
+            <option value="" disabled selected>Seleccione una Clave de Unidad de Aprendizaje</option>
           </select>
         </div>
         <div class="form-group">
           <label for="mat_etu">Matricula de Estudiante</label>
-          <input type="text" name="mat_etu" id="mat_etu" class="form-control">
+          <input type="number" name="mat_etu" id="mat_etu" class="form-control">
         </div>
         <div class="form-group">
           <label for="catedratico">Catedrático</label>
           <select name="catedratico" id="catedratico" class="form-control">
-            <option disabled selected>Seleccione un Catedrático</option>
+            <option value="" disabled selected>Seleccione un Catedrático</option>
             <option value="Manuel Campos Torrado">Manuel Campos Torrado</option>
             <option value="Maria de la Paz Valles">Maria de la Paz Valles</option>
             <option value="Jesus Sierra Montes">Jesus Sierra Montes</option>
@@ -91,7 +95,7 @@
         <div class="form-group">
           <label for="calificacion">Calificación</label>
           <select name="calificacion" id="calificacion" class="form-control">
-            <option disabled selected>Seleccione una Calificación</option>
+            <option value="" disabled selected>Seleccione una Calificación</option>
             <option value="NC">NC</option>
             <option value="6">6</option>
             <option value="7">7</option>
@@ -104,8 +108,8 @@
           <label for="ciclo">Ciclo Escolar (Mes Año - Mes Año)</label>
           <input type="text" name="ciclo" id="ciclo" class="form-control">
         </div>
-        <button type="button" class="btn btn-primary" id="inser">registrar</button>
-        <button type="button" class="btn btn-secondary" id="consu">mostrar</button>
+        <button type="button" class="btn btn-primary" id="inser">Registrar</button>
+        <button type="button" class="btn btn-secondary" id="consu">Mostrar</button>
       </form>
     </div>
   </div>

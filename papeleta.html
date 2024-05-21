@@ -59,10 +59,18 @@
         <div class="form-group">
           <label for="pro_edu_pap">Programa Educativo</label>
           <select name="pro_edu_pap" id="pro_edu_pap" class="form-control">
+            <option disabled selected>Seleccione un Programa Educativo</option>
             <option value="Ing. Computación">Ing. Computación</option>
             <option value="Ing. Civil">Ing. Civil</option>
+            <option value="Lic. Psicología">Lic. Psicología</option>
           </select>
-        </div>        
+        </div>
+        <div class="form-group">
+          <label for="cla_uni">Clave de Unidad de Aprendizaje</label>
+          <select name="cla_uni" id="cla_uni" class="form-control">
+            <option value="" disabled selected>Seleccione una Clave de Unidad de Aprendizaje</option>
+          </select>
+        </div>
         <div class="form-group">
           <label for="sem_pap">Semestre</label>
           <input type="text" name="sem_pap" id="sem_pap" class="form-control">
@@ -71,33 +79,8 @@
             <label for="gru_pap">Grupo</label>
             <input type="text" name="gru_pap" id="gru_pap" class="form-control">
         </div>
-        <div class="form-group">
-          <label for="unidad1">Unidad 1</label>
-          <select name="unidad1" id="unidad1" class="form-control unidad-select">
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="unidad2">Unidad 2</label>
-          <select name="unidad2" id="unidad2" class="form-control unidad-select">
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="unidad3">Unidad 3</label>
-          <select name="unidad3" id="unidad3" class="form-control unidad-select">
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="unidad4">Unidad 4</label>
-          <select name="unidad4" id="unidad4" class="form-control unidad-select">
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="unidad5">Unidad 5</label>
-          <select name="unidad5" id="unidad5" class="form-control unidad-select">
-          </select>
-        </div>
-        <button type="button" class="btn btn-primary" id = "inser">registrar</button>
-        <button type="button" class="btn btn-secondary" id = "consu">mostrar</button>
+        <button type="button" class="btn btn-primary" id = "inser">Registrar</button>
+        <button type="button" class="btn btn-secondary" id = "consu">Mostrar</button>
       </form>
     </div>
   </div>
