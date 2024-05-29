@@ -69,12 +69,12 @@ bti.addEventListener('click', async (e) => {
         const newmatricula = matricula + "-01";
         const docRef = doc(subcoleccionRef, newmatricula);
         await setDoc(docRef, {
-            Clave: document.getElementById("cla_uni").value,
-            Matricula: matricula, 
-            Catedratico: document.getElementById("catedratico").value,
-            Calificacion: calificacion,
-            Ciclo: document.getElementById("ciclo").value,
-            Registro: "Pancho Villa",
+          Clave: document.getElementById("cla_uni").value,
+          Matricula: matricula, 
+          Catedratico: document.getElementById("catedratico").value,
+          Calificacion: calificacion,
+          Ciclo: document.getElementById("ciclo").value,
+          Registro: "Pancho Villa",
         });
         console.log("La subcolección no existe");
       } else {
@@ -102,6 +102,7 @@ bti.addEventListener('click', async (e) => {
         }
 
         if (registroExiste && intento >= 3) {
+          const overlayDiv = mostrarOverlay();
           const mensajeErrorHTML = `
             <div id="mensaje-error" class="mensaje-error">
               <p>Número de Intentos Excedido. Subir Reporte</p>
@@ -111,7 +112,8 @@ bti.addEventListener('click', async (e) => {
           const mensajeError = document.getElementById("mensaje-error");
           setTimeout(() => {
             mensajeError.remove();
-          }, 3000);
+            overlayDiv.remove();
+          }, 4000);
         } else {
           const docRef = doc(subcoleccionRef, registroID);
           await setDoc(docRef, {
@@ -135,6 +137,7 @@ bti.addEventListener('click', async (e) => {
           Registro: "Pancho Villa",
       });
     }
+    const overlayDiv = mostrarOverlay();
     const mensajeErrorHTML = `
       <div id="mensaje-completado" class="mensaje-completado">
         <p>Subiendo Registro...</p>
@@ -144,6 +147,7 @@ bti.addEventListener('click', async (e) => {
     const mensajeError = document.getElementById("mensaje-completado");
     setTimeout(() => {
       mensajeError.remove();
+      overlayDiv.remove();
     }, 3000);
   } catch (e) {
     console.error("Error adding document: ", e);
@@ -269,7 +273,6 @@ window.addEventListener('DOMContentLoaded', async () => {
     const unidadesRef = collection(db, "Unidades");
     const unidadesSnapshot = await getDocs(unidadesRef);
     const selectElement = document.getElementById("cla_uni");
-    
     unidadesSnapshot.forEach((doc) => {
       const unidadId = doc.id;
       const unidadData = doc.data(); 
@@ -283,3 +286,17 @@ window.addEventListener('DOMContentLoaded', async () => {
     console.error("Error al cargar las unidades:", error);
   }
 });
+
+function mostrarOverlay() {
+  const overlayDiv = document.createElement("div");
+  overlayDiv.style.position = "fixed";
+  overlayDiv.style.top = "0";
+  overlayDiv.style.left = "0";
+  overlayDiv.style.width = "100%";
+  overlayDiv.style.height = "100%";
+  overlayDiv.style.backgroundColor = "rgba(0, 0, 0, 0.0)";
+  overlayDiv.style.zIndex = "999";
+  overlayDiv.id = "overlay-div";
+  document.body.appendChild(overlayDiv);
+  return overlayDiv;
+}
